@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Paint para o nível-02</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --roxo: #5b3a73;
+            --roxo-fundo: #4a2d61;
+            --lavanda: #e5d5ef;
+            --verde: #158a77;
+            --verde-escuro: #0d5a4d;
+            --creme: #fbf6ec;
+            --fita: rgba(247, 205, 70, 0.8);
+        }
+
+        * { box-sizing: border-box; }
+
+        html, body { height: 100%; }
+
+        body {
+            margin: 0;
+            display: flex;
+            font-family: "Fredoka", "Trebuchet MS", Arial, sans-serif;
+            background-color: var(--lavanda);
+            color: var(--roxo);
+            overflow: hidden;
+        }
+
+        svg.icone {
+            width: 26px;
+            height: 26px;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 2.2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            flex: none;
+        }
+
+        /* ---------- Barra lateral ---------- */
+        .controls {
+            flex: 0 0 350px;
+            width: 350px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            padding: 24px 24px 20px;
+            background-color: var(--roxo-fundo);
+            color: #fff;
+            border-radius: 0 40px 40px 0;
+            box-shadow: 6px 0 0 var(--roxo);
+            overflow-y: auto; /* só rola em telas muito baixas */
+        }
+
+        .titulo h1 {
+            margin: 0;
+            font-size: 2.1rem;
+            font-weight: 700;
+            line-height: 1;
+            letter-spacing: -0.01em;
+        }
+
+        .linha-titulo {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            margin-top: 12px;
+        }
+
+        .selo {
+            display: inline-block;
+            padding: 3px 14px 4px;
+            background-color: var(--verde);
+            color: #fff;
+            border: 2px solid #fff;
+            border-radius: 999px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            transform: rotate(-3deg);
+            box-shadow: 3px 3px 0 var(--verde-escuro);
+        }
+
+        .voltar {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 5px 12px 5px 9px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--roxo);
+            text-decoration: none;
+            background-color: #fff;
+            border: 2.5px solid var(--roxo);
+            border-radius: 999px;
+            box-shadow: 0 3px 0 rgba(0, 0, 0, 0.4);
+            transition: transform 0.08s, box-shadow 0.08s;
+        }
+        .voltar .icone { width: 18px; height: 18px; }
+        .voltar:active {
+            transform: translateY(3px);
+            box-shadow: 0 0 0 rgba(0, 0, 0, 0.4);
+        }
+
+        .rotulo {
+            margin: 0 0 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--lavanda);
+        }
+
+        /* ---------- Desenhos (fotos coladas) ---------- */
+        .gallery {
+            display: flex;
+            gap: 14px;
+            padding-left: 4px;
+        }
+
+        .thumb {
+            display: block;
+            width: 84px;
+            height: 84px;
+            object-fit: cover;
+            padding: 0;
+            background: #fff;
+            border: 5px solid #fff;
+            border-bottom-width: 14px;
+            border-radius: 4px;
+            box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.35);
+            cursor: pointer;
+            transition: transform 0.15s;
+        }
+        .thumb:nth-child(1) { transform: rotate(-4deg); }
+        .thumb:nth-child(2) { transform: rotate(2deg) translateY(3px); }
+        .thumb:nth-child(3) { transform: rotate(-2deg); }
+        .thumb:hover { transform: rotate(0deg) translateY(-5px) scale(1.05); }
+
+        /* ---------- Ferramentas ---------- */
+        .tools-main {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .tool,
+        .mini {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-family: inherit;
+            font-weight: 700;
+            color: var(--roxo);
+            background-color: #fff;
+            border: 3px solid var(--roxo);
+            cursor: pointer;
+            transition: transform 0.08s, box-shadow 0.08s;
+        }
+
+        .tool {
+            padding: 12px 8px;
+            font-size: 1.1rem;
+            border-radius: 18px;
+            box-shadow: 0 5px 0 rgba(0, 0, 0, 0.4);
+        }
+
+        .tool.active {
+            background-color: var(--verde);
+            color: #fff;
+            border-color: #fff;
+            box-shadow: 0 5px 0 var(--verde-escuro);
+        }
+
+        .tools-sub {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-top: -2px;
+        }
+
+        .mini {
+            flex-direction: column;
+            gap: 2px;
+            padding: 7px 4px 6px;
+            font-size: 0.8rem;
+            border-radius: 14px;
+            box-shadow: 0 4px 0 rgba(0, 0, 0, 0.4);
+        }
+        .mini .icone { width: 22px; height: 22px; }
+
+        .tool:active,
+        .mini:active {
+            transform: translateY(4px);
+            box-shadow: 0 1px 0 rgba(0, 0, 0, 0.4);
+        }
+
+        .tool:focus-visible,
+        .mini:focus-visible,
+        .voltar:focus-visible,
+        .swatch:focus-visible,
+        .thumb:focus-visible {
+            outline: 3px solid #fff;
+            outline-offset: 3px;
+        }
+
+        #fileInput { display: none; }
+
+        /* ---------- Paleta de tinta ---------- */
+        .paleta-tinta {
+            padding: 20px 22px 22px;
+            background-color: var(--creme);
+            border: 3px solid #fff;
+            border-radius: 38px 56px 44px 62px / 46px 40px 58px 48px;
+            box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.35);
+        }
+
+        .palette {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 9px 8px;
+            justify-items: center;
+        }
+
+        .swatch {
+            width: 36px;
+            height: 36px;
+            border: 2.5px solid var(--roxo);
+            border-radius: 52% 48% 50% 50% / 56% 46% 54% 44%;
+            cursor: pointer;
+            transition: transform 0.12s;
+        }
+        .swatch:nth-child(3n + 2) { transform: translateY(3px); }
+        .swatch:hover { transform: scale(1.15); }
+        .swatch.selected {
+            transform: scale(1.1);
+            box-shadow: 0 0 0 3px var(--creme), 0 0 0 5.5px var(--roxo);
+        }
+
+        .custom-color {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-top: 14px;
+            padding-top: 12px;
+            border-top: 2px dashed rgba(91, 58, 115, 0.35);
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--roxo);
+        }
+        .custom-color input {
+            width: 56px;
+            height: 32px;
+            margin-left: auto;
+            padding: 0;
+            background: #fff;
+            border: 2.5px solid var(--roxo);
+            border-radius: 10px;
+            cursor: pointer;
+        }
+
+        /* ---------- Folha de desenho ---------- */
+        .area-tela {
+            flex: 1;
+            min-width: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 28px 32px;
+        }
+
+        .papel {
+            position: relative;
+            width: min(100%, calc((100vh - 90px) * 1.3333));
+        }
+
+        .papel::before,
+        .papel::after {
+            content: "";
+            position: absolute;
+            top: -14px;
+            width: 96px;
+            height: 28px;
+            background: var(--fita);
+            z-index: 1;
+            pointer-events: none;
+        }
+        .papel::before { left: 6%; transform: rotate(-6deg); }
+        .papel::after { right: 6%; transform: rotate(5deg); }
+
+        canvas {
+            display: block;
+            width: 100%;
+            height: auto;
+            background: #fff;
+            border: 5px solid var(--roxo);
+            border-radius: 6px;
+            box-shadow: 9px 9px 0 rgba(91, 58, 115, 0.35);
+            cursor: crosshair;
+            touch-action: none; /* permite pintar com o dedo sem rolar a tela */
+        }
+
+        /* Telas baixas: barra mais compacta */
+        @media (max-height: 780px) {
+            .controls { gap: 11px; padding-top: 16px; padding-bottom: 14px; }
+            .titulo h1 { font-size: 1.8rem; }
+            .linha-titulo { margin-top: 8px; }
+            .thumb { width: 66px; height: 66px; }
+            .tool { padding: 8px; }
+            .paleta-tinta { padding: 14px 18px 16px; }
+            .swatch { width: 32px; height: 32px; }
+            .custom-color { margin-top: 10px; padding-top: 8px; }
+        }
+
+        /* Celular em pé: barra em cima, folha embaixo */
+        @media (max-width: 760px) {
+            html, body { height: auto; }
+            body { flex-direction: column; overflow: auto; }
+            .controls {
+                flex: none;
+                width: 100%;
+                border-radius: 0 0 32px 32px;
+                box-shadow: 0 6px 0 var(--roxo);
+                overflow: visible;
+            }
+            .palette { grid-template-columns: repeat(8, 1fr); }
+            .area-tela { padding: 32px 18px 28px; }
+            .papel { width: 100%; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            * { transition: none !important; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Ícones desenhados em traço (sem emojis) -->
+    <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+        <symbol id="i-pincel" viewBox="0 0 24 24">
+            <path d="m9.06 11.9 8.07-8.06a2.85 2.85 0 1 1 4.03 4.03l-8.06 8.08"/>
+            <path d="M7.07 14.94c-1.66 0-3 1.35-3 3.02 0 1.33-2.5 1.52-2 2.02 1.08 1.1 2.49 2.02 4 2.02 2.2 0 4-1.8 4-4.04a3.01 3.01 0 0 0-3-3.02z"/>
+        </symbol>
+        <symbol id="i-balde" viewBox="0 0 24 24">
+            <path d="m19 11-8-8-8.6 8.6a2 2 0 0 0 0 2.8l5.2 5.2c.8.8 2 .8 2.8 0L19 11Z"/>
+            <path d="m5 2 5 5"/>
+            <path d="M2 13h15"/>
+            <path d="M22 20a2 2 0 1 1-4 0c0-1.6 1.7-2.4 2-4 .3 1.6 2 2.4 2 4Z"/>
+        </symbol>
+        <symbol id="i-desfazer" viewBox="0 0 24 24">
+            <path d="M9 14 4 9l5-5"/>
+            <path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/>
+        </symbol>
+        <symbol id="i-limpar" viewBox="0 0 24 24">
+            <path d="M3 6h18"/>
+            <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/>
+            <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/>
+        </symbol>
+        <symbol id="i-abrir" viewBox="0 0 24 24">
+            <rect width="18" height="18" x="3" y="3" rx="2"/>
+            <circle cx="9" cy="9" r="2"/>
+            <path d="m21 15-3.1-3.1a2 2 0 0 0-2.8 0L6 21"/>
+        </symbol>
+        <symbol id="i-casa" viewBox="0 0 24 24">
+            <path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"/>
+            <path d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+        </symbol>
+    </svg>
+
+    <div class="controls">
+        <div class="titulo">
+            <h1>Hora de pintar!</h1>
+            <div class="linha-titulo">
+                <span class="selo">Nível 2</span>
+                <a href="tela de apresentação.html" class="voltar">
+                    <svg class="icone"><use href="#i-casa"/></svg>Voltar ao Início
+                </a>
+            </div>
+        </div>
+
+        <div>
+            <p class="rotulo">Escolha um desenho para colorir:</p>
+            <div class="gallery">
+                <img src="desenhos2/sonic.jpeg" class="thumb" onclick="loadPresetImage('desenhos2/sonic.jpeg')" title="Desenho 1" alt="Desenho 1">
+                <img src="desenhos2/flor.jpeg" class="thumb" onclick="loadPresetImage('desenhos2/flor.jpeg')" title="Desenho 2" alt="Desenho 2">
+                <img src="desenhos2/coelho.jpeg" class="thumb" onclick="loadPresetImage('desenhos2/coelho.jpeg')" title="Desenho 3" alt="Desenho 3">
+            </div>
+        </div>
+
+        <div class="tools-main">
+            <button id="btnPincel" class="tool" aria-pressed="false">
+                <svg class="icone"><use href="#i-pincel"/></svg>Pincel
+            </button>
+            <button id="btnBalde" class="tool active" aria-pressed="true">
+                <svg class="icone"><use href="#i-balde"/></svg>Balde
+            </button>
+        </div>
+
+        <div class="tools-sub">
+            <button id="btnUndo" class="mini">
+                <svg class="icone"><use href="#i-desfazer"/></svg>Desfazer
+            </button>
+            <button id="btnClear" class="mini">
+                <svg class="icone"><use href="#i-limpar"/></svg>Limpar
+            </button>
+            <label for="fileInput" class="mini" title="Abrir uma imagem do computador">
+                <svg class="icone"><use href="#i-abrir"/></svg>Abrir do PC
+            </label>
+            <input type="file" id="fileInput" accept="image/*">
+        </div>
+
+        <div class="paleta-tinta">
+            <div class="palette" id="palette"></div>
+            <div class="custom-color">
+                <span>Cor personalizada:</span>
+                <input type="color" id="colorPicker" value="#4a90e2">
+            </div>
+        </div>
+    </div>
+
+    <div class="area-tela">
+        <div class="papel">
+            <canvas id="tela" width="800" height="600"></canvas>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('tela');
+        const ctx = canvas.getContext('2d', { willReadFrequently: true });
+        let painting = false;
+
+        function clearCanvas() {
+            ctx.fillStyle = "white";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+        }
+        clearCanvas();
+
+        const paletteContainer = document.getElementById('palette');
+        const colorPicker = document.getElementById('colorPicker');
+
+        const cores = [
+            '#000000', '#6B6B6B', '#BDBDBD', '#FFFFFF', '#7B4A2D', '#C68642',
+            '#F1C27D', '#FFD9B3', '#D0021B', '#FF6F61', '#FF4FA3', '#F8B4D9',
+            '#F5A623', '#F8E71C', '#B8E986', '#3AB54A', '#0B6E3D', '#50E3C2',
+            '#7FD6FF', '#4A90E2', '#1B3A8A', '#9013FE', '#BD10E0', '#D6B3FF'
+        ];
+
+        let selectedColor = '#4A90E2';
+        let tool = 'balde';
+        let historyStack = [];
+
+        // --- PALETA ---
+        cores.forEach(cor => {
+            const swatch = document.createElement('div');
+            swatch.className = 'swatch';
+            swatch.style.backgroundColor = cor;
+            swatch.title = cor;
+            if (cor === selectedColor) swatch.classList.add('selected');
+
+            swatch.onclick = () => {
+                selectedColor = cor;
+                colorPicker.value = cor.toLowerCase();
+                document.querySelectorAll('.swatch').forEach(s => s.classList.remove('selected'));
+                swatch.classList.add('selected');
+            };
+            paletteContainer.appendChild(swatch);
+        });
+
+        colorPicker.oninput = (e) => {
+            selectedColor = e.target.value;
+            document.querySelectorAll('.swatch').forEach(s => s.classList.remove('selected'));
+        };
+
+        // --- HISTÓRICO ---
+        function saveState() {
+            if (historyStack.length >= 20) historyStack.shift();
+            historyStack.push(ctx.getImageData(0, 0, canvas.width, canvas.height));
+        }
+
+        document.getElementById('btnUndo').onclick = () => {
+            if (historyStack.length > 0) ctx.putImageData(historyStack.pop(), 0, 0);
+        };
+
+        // --- CARREGAR IMAGENS ---
+        function drawImageOnCanvas(img) {
+            saveState();
+            clearCanvas();
+            const ratio = Math.min(canvas.width / img.width, canvas.height / img.height);
+            const nw = img.width * ratio;
+            const nh = img.height * ratio;
+            const posX = (canvas.width - nw) / 2;
+            const posY = (canvas.height - nh) / 2;
+            ctx.drawImage(img, posX, posY, nw, nh);
+        }
+
+        function loadPresetImage(url) {
+            const img = new Image();
+            img.crossOrigin = "anonymous"; // ativado para imagens da pasta
+            img.onload = () => {
+                drawImageOnCanvas(img);
+                console.log("Imagem carregada: " + url);
+            };
+            img.onerror = () => {
+                alert("Erro ao carregar imagem em: " + url + "\nVerifique se a pasta 'desenhos2' existe e contém os arquivos sonic.jpeg, flor.jpeg e coelho.jpeg.");
+            };
+            img.src = url;
+        }
+
+        // --- EVENTOS ---
+        document.getElementById('fileInput').onchange = (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    // Upload do PC usa data:URL, sem crossOrigin (causaria erro)
+                    const img = new Image();
+                    img.onload = () => drawImageOnCanvas(img);
+                    img.onerror = () => alert("Erro ao carregar a imagem do seu computador.");
+                    img.src = event.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        };
+
+        document.getElementById('btnPincel').onclick = () => { tool = 'pincel'; updateUI('btnPincel'); };
+        document.getElementById('btnBalde').onclick = () => { tool = 'balde'; updateUI('btnBalde'); };
+        document.getElementById('btnClear').onclick = () => { saveState(); clearCanvas(); };
+
+        function updateUI(id) {
+            ['btnPincel', 'btnBalde'].forEach(b => {
+                const el = document.getElementById(b);
+                const ativo = (b === id);
+                el.classList.toggle('active', ativo);
+                el.setAttribute('aria-pressed', ativo);
+            });
+        }
+
+        // Pointer events: funcionam com mouse, caneta e toque (tablet/celular)
+        canvas.onpointerdown = (e) => {
+            const { x, y } = getMousePos(e);
+            saveState();
+            if (tool === 'pincel') {
+                painting = true;
+                canvas.setPointerCapture(e.pointerId);
+                ctx.strokeStyle = selectedColor;
+                ctx.lineWidth = 4;
+                ctx.lineCap = 'round';
+                ctx.beginPath();
+                ctx.moveTo(x, y);
+            } else {
+                floodFill(x, y, hexToRgb(selectedColor));
+            }
+        };
+
+        canvas.onpointermove = (e) => {
+            if (!painting || tool !== 'pincel') return;
+            const { x, y } = getMousePos(e);
+            ctx.lineTo(x, y);
+            ctx.stroke();
+        };
+
+        canvas.onpointerup = () => painting = false;
+        canvas.onpointercancel = () => painting = false;
+
+        function getMousePos(e) {
+            const rect = canvas.getBoundingClientRect();
+            // desconta a borda do canvas para o clique cair no pixel certo
+            const cs = getComputedStyle(canvas);
+            const bl = parseFloat(cs.borderLeftWidth) || 0;
+            const bt = parseFloat(cs.borderTopWidth) || 0;
+            const bw = rect.width - bl - (parseFloat(cs.borderRightWidth) || 0);
+            const bh = rect.height - bt - (parseFloat(cs.borderBottomWidth) || 0);
+            return {
+                x: Math.floor((e.clientX - rect.left - bl) * (canvas.width / bw)),
+                y: Math.floor((e.clientY - rect.top - bt) * (canvas.height / bh))
+            };
+        }
+
+        function hexToRgb(hex) {
+            const r = parseInt(hex.slice(1, 3), 16);
+            const g = parseInt(hex.slice(3, 5), 16);
+            const b = parseInt(hex.slice(5, 7), 16);
+            return { r, g, b };
+        }
+
+        // --- BALDE (preenchimento) ---
+        function floodFill(startX, startY, fillRGB) {
+            const width = canvas.width;
+            const height = canvas.height;
+            if (startX < 0 || startX >= width || startY < 0 || startY >= height) return;
+
+            const imageData = ctx.getImageData(0, 0, width, height);
+            const pixels = imageData.data;
+            const startPos = (startY * width + startX) * 4;
+
+            const sR = pixels[startPos], sG = pixels[startPos + 1], sB = pixels[startPos + 2], sA = pixels[startPos + 3];
+
+            // não preenche a mesma cor, nem as linhas pretas do desenho
+            if (sR === fillRGB.r && sG === fillRGB.g && sB === fillRGB.b) return;
+            if (sR < 100 && sG < 100 && sB < 100 && sA > 150) return;
+
+            const stack = [startY * width + startX];
+            while (stack.length > 0) {
+                const idx = stack.pop();
+                const pos = idx * 4;
+
+                if (pixels[pos] !== sR || pixels[pos + 1] !== sG || pixels[pos + 2] !== sB || pixels[pos + 3] !== sA) continue;
+
+                pixels[pos] = fillRGB.r;
+                pixels[pos + 1] = fillRGB.g;
+                pixels[pos + 2] = fillRGB.b;
+                pixels[pos + 3] = 255;
+
+                const x = idx % width;
+                const y = (idx - x) / width;
+
+                if (x + 1 < width) stack.push(idx + 1);
+                if (x - 1 >= 0) stack.push(idx - 1);
+                if (y + 1 < height) stack.push(idx + width);
+                if (y - 1 >= 0) stack.push(idx - width);
+            }
+            ctx.putImageData(imageData, 0, 0);
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>escolha o seu nivel</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --fundo-pagina: #939394;
+            --roxo-escuro: #5b3a73;
+            --lavanda: #e5d5ef;
+            --verde: #158a77;
+            --verde-escuro: #0d5a4d;
+            --menta: #d4efe5;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Fredoka", "Trebuchet MS", Arial, sans-serif;
+            margin: 0;
+            padding: 24px;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--fundo-pagina);
+        }
+
+        /* Cartão central */
+        .cabecalho {
+            width: 100%;
+            max-width: 800px;
+            padding: 52px 50px 50px;
+            background-color: var(--lavanda);
+            border: 10px solid var(--roxo-escuro);
+            border-radius: 32px;
+            text-align: center;
+        }
+
+        .cabecalho h1 {
+            margin: 0;
+            font-size: 2rem;
+            font-weight: 700;
+            line-height: 1.15;
+            color: var(--roxo-escuro);
+        }
+
+        /* Selo abaixo do título */
+        .selo {
+            display: inline-block;
+            margin: 8px 0 0;
+            padding: 4px 14px;
+            background-color: var(--roxo-escuro);
+            color: #ffffff;
+            border-radius: 999px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+        }
+
+        /* Container dos botões */
+        .container-botoes {
+            display: flex;
+            flex-direction: column;
+            gap: 22px;
+            margin-top: 36px;
+        }
+
+        .container-botoes a {
+            text-decoration: none;
+        }
+
+        /* Botão grande com efeito 3D */
+        .botao-nivel {
+            display: block;
+            width: 100%;
+            padding: 16px 20px;
+            background-color: var(--verde);
+            color: #ffffff;
+            border: 3px solid var(--verde-escuro);
+            border-radius: 20px;
+            box-shadow: 0 6px 0 var(--verde-escuro);
+            font-family: inherit;
+            font-size: 1.25rem;
+            font-weight: 700;
+            text-align: center;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: transform 0.1s, box-shadow 0.1s, filter 0.15s;
+        }
+
+        .botao-nivel:hover {
+            filter: brightness(1.08);
+        }
+
+        .botao-nivel:active {
+            transform: translateY(4px);
+            box-shadow: 0 2px 0 var(--verde-escuro);
+        }
+
+        .container-botoes a:focus-visible .botao-nivel {
+            outline: 4px solid var(--roxo-escuro);
+            outline-offset: 4px;
+        }
+
+        @media (max-width: 520px) {
+            .cabecalho {
+                padding: 36px 22px 34px;
+            }
+
+            .cabecalho h1 {
+                font-size: 1.6rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="cabecalho">
+        <h1>Escolha o nível que deseja pintar</h1>
+        <span class="selo">Pintura</span>
+
+        <div class="container-botoes">
+            <a href="desenhos_seletor.html">
+                <span class="botao-nivel">Nível 1</span>
+            </a>
+
+            <a href="desenhos_seletor_02.html">
+                <span class="botao-nivel">Nível 2</span>
+            </a>
+        </div>
+    </div>
+</body>
+</html>

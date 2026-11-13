@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Site Gamificado TCC</title>
+
+    <!-- Fonte legível e amigável para leitura neurodivergente -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* ===================================================
+           PROJETO TEAfeto - ESTILOS DA TELA INICIAL
+           Paleta de Cores Aplicada:
+           - Roxo Ameixa: #563A70 (Identidade e títulos)
+           - Verde Esmeralda Suave: #168C78 (Botão principal)
+           - Lavanda Clara: #E4D5EF (Fundo do cartão)
+           - Verde Menta: #D5EEE6 (Cards das instruções)
+           - Coral Queimado: #D9685B (Foco visual)
+           - Branco Acinzentado: #F8F7FA (Fundo de descanso visual)
+           =================================================== */
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Fredoka', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #939294;
+            color: #2D2D2D;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        /* Card central */
+        .container {
+            background-color: #E4D5EF;
+            width: 100%;
+            max-width: 800px;
+            padding: 50px 50px;
+            border-radius: 30px;
+            border: 10px solid #563A70;
+            box-shadow: 10 8px 0 #563A70;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Marca TEAfeto */
+        .brand-tag {
+            display: inline-block;
+            background-color: #563A70;
+            color: #FFFFFF;
+            font-size: 0.9rem;
+            font-weight: 700;
+            padding: 5px 14px;
+            border-radius: 12px;
+            letter-spacing: 1px;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+        }
+
+        /* Títulos */
+        h1 {
+            color: #563A70;
+            font-size: 2.1rem;
+            font-weight: 700;
+            line-height: 1.2;
+            margin-bottom: 4px;
+        }
+
+
+        /* Lista de instruções */
+        .lista-instrucoes {
+            list-style: none;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 28px;
+        }
+
+        .lista-instrucoes li {
+            background-color: #D5EEE6;
+            color: #563A70;
+            font-size: 1.05rem;
+            font-weight: 600;
+            padding: 12px 18px;
+            border-radius: 16px;
+            border: 2px solid #168C78;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-align: left;
+        }
+
+        .lista-instrucoes .marcador {
+            color: #168C78;
+            font-size: 0.9rem;
+        }
+
+        /* Botão principal */
+        .link-acao {
+            width: 100%;
+            text-decoration: none;
+        }
+
+        button.btn-iniciar {
+            width: 100%;
+            background-color: #168C78;
+            color: #fffcfc;
+            font-family: inherit;
+            font-size: 1.25rem;
+            font-weight: 700;
+            padding: 16px 24px;
+            border-radius: 18px;
+            border: 3px solid #0E5C4E;
+            box-shadow: 0 5px 0 #0E5C4E;
+            cursor: pointer;
+            letter-spacing: 0.5px;
+            transition: transform 0.1s ease, background-color 0.15s ease;
+        }
+
+        button.btn-iniciar:hover {
+            background-color: #127564;
+        }
+
+        button.btn-iniciar:active {
+            transform: translateY(4px);
+            box-shadow: 0 1px 0 #0E5C4E;
+        }
+
+        button.btn-iniciar:focus-visible {
+            outline: 4px solid #D9685B;
+            outline-offset: 3px;
+        }
+
+        /* Ajustes para telemóvel/celular */
+        @media (max-width: 480px) {
+            .container {
+                padding: 28px 20px;
+                border-radius: 22px;
+            }
+
+            h1 {
+                font-size: 1.8rem;
+            }
+
+            h2 {
+                font-size: 1.15rem;
+            }
+
+            button.btn-iniciar {
+                font-size: 1.15rem;
+                padding: 14px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <main class="container">
+        <header class="header-intro">
+            <h1>Seja bem-vindo!</h1>
+            <span class="brand-tag">TEAfeto</span>
+           
+        </header>
+
+        <ul class="lista-instrucoes">
+            <li>
+                <span class="marcador" aria-hidden="true">●</span>
+                <span>Pinte os desenhos!</span>
+            </li>
+            <li>
+                <span class="marcador" aria-hidden="true">●</span>
+                <span>Faça como preferir!</span>
+            </li>
+            <li>
+                <span class="marcador" aria-hidden="true">●</span>
+                <span>Se divirta!</span>
+            </li>
+        </ul>
+
+        <!-- O link original para o jogo foi mantido exato -->
+        <a href="escolhas dos niveis.html" class="link-acao">
+            <button class="btn-iniciar" type="button">INICIAR JOGO</button>
+        </a>
+    </main>
+
+</body>
+</html>
